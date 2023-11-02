@@ -1,0 +1,181 @@
+/* CSS */
+#app {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* Header */
+header {
+    display: flex;
+    flex-direction: row;
+    padding: 10px 0;
+    background: linear-gradient(to right, #6e45e2, #89d4cf); /* Background gradient */
+    justify-content: space-between;
+    align-items: center;
+    
+}
+
+
+/* h1 Tag */
+header h1 {
+    font-size: 2rem;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Text shadow */
+    margin: 0;
+    margin-left: auto; /* Center horizontally */
+    margin-right: auto;
+}
+
+/* Header button */
+header button {
+    background: #ff5722; /* Background color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+
+header button:hover {
+    background: #e64a19;
+}
+/* Search and Sort */
+.searchAndSort,
+.searchBox {
+    left: 75%;
+    padding: 20px;
+    width: 230px;
+    position: absolute;
+    color: black;
+}
+
+
+/* Search and Sort */
+.searchAndSort {
+    top: 40%;
+}
+
+
+/* Page Header */
+.pageHeader {
+    text-align: center;
+}
+
+
+/* Lesson */
+.lesson {
+    margin-left: 25%;
+    margin-top: 2%;
+    position: relative;
+    width: 700px;
+    height: 190px;
+    border: 3px solid black;
+    color: black;
+    flex-direction: row;
+    border-style: dotted;
+    
+    /* Add shadow effect */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Lesson H2 */
+.lesson h2 {
+    font-size: 17px;
+
+    font-family: verdana;
+}
+
+
+/* Lesson p */
+.lesson h2,
+.lesson p {
+    position: relative;
+    display: flex;
+    margin-left: 80px;
+    
+}
+
+
+/* Lesson Image */
+.lessonImage {
+    position: absolute;
+    display: flex;
+    margin-left: 550px;
+    margin-top: 20px;
+    width: 100px;
+    height: 100px;
+}
+
+
+/* Lesson Button */
+.lesson button {
+    display: flex;
+    margin-left: 550px;
+    background-color: black;
+    color: white;
+    border-radius: 2px;
+}
+
+
+/* Fa Plus */
+.fa-plus {
+    position: relative;
+    top: 3px;
+    margin-right: 3px;
+}
+
+
+/* Cart Products */
+.cartProducts {
+    padding: 10px;
+    width: 180px;
+    margin-left: 200px;
+}
+
+
+/* Basket */
+.basket {
+    width: 34%;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 0px;
+    margin-left: 450px;
+    padding: 30px;
+}
+
+
+/* Input Field */
+.inputField {
+    margin-left: 150px;
+}
+
+
+/* Pohne input Field  */
+.PhoneinputField {
+    margin-left: 93px;
+}
+
+
+/* Submit Button */
+.submitBtn {
+    margin-top: 10px;
+    margin-left: 370px;
+}
+
+
+/* Name Field */
+.nameField {
+    margin-left: 60px;
+}
+
+
+/* Password Field */
+.passwordField {
+    margin-left: 60px;
+}
