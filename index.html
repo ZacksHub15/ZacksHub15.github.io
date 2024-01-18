@@ -1,249 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Collection Store</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <link rel="stylesheet" href="Styles/style.css" />
-    <script
-      src="https://kit.fontawesome.com/0ecb2c1182.js"
-      crossorigin="anonymous"
-    ></script>
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-      crossorigin="anonymous"
-    />
-  </head>
-  <body>
 
-    <!-- App ID -->
-    <div id="app">
-      <header>
-        <h1 v-text="sitename"></h1>
-        <button
-          v-html="cartCount + ' ' + cartButton"
-          v-on:click="showCheckout"
-          v-if="cartCount  && showProduct"
-        ></button>
-       
-        
-        <!-- Cart Count Cart Button -->
-        <button
-          v-html="cartCount + ' ' + cartButton"
-          v-on:click="showCheckout"
-          v-else-if="!showProduct"
-        ></button>
-        <button v-html="cartCount + ' ' + cartButton" disabled v-else></button>
-      </header>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orders and Lessons</title>
+  <style>
+    .lesson {
+      margin-left: 25%;
+      margin-top: 2%;
+      position: relative;
+      width: 700px;
+      height: 220px;
+      border: 3px solid #ddd;
+      color: #333;
+      flex-direction: row;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      background-color: #fff;
+      transition: transform 0.3s;
+    }
 
-      <!-- Product Page -->
-      <div v-if="showProduct">
-        <div class="searchBox">
-          <p>
-            Search:
-            <input type="text" class="searchInput" v-model="searchTerm" />
-          </p>
-        </div>
+    .lesson:hover {
+      transform: scale(1.02);
+    }
 
-        
-        <!-- Search and Sort -->
-        <div class="searchAndSort">
-          <p>
-            <input
-              type="radio"
-              id="priceLowHigh"
-              value="priceLowHigh"
-              v-model="sortStyle"
-            />
-            <!-- Price High And Low -->
-            <label for="priceLowHigh">Price: Low to High</label>
-          </p>
-          <p>
-            <input
-              type="radio"
-              id="priceHighLow"
-              value="priceHighLow"
-              v-model="sortStyle"
-            />
+    .lesson-image {
+      width: 200px;
+      height: 100%;
+      object-fit: cover;
+      border-right: 3px solid #ddd;
+    }
 
-            <!-- Price High Low -->
-            <label for="priceHighLow">Price : High to Low</label>
-          </p>
-          <p>
-            <input type="radio" id="aToZ" value="aToZ" v-model="sortStyle" />
-            <label for="aToZ">Name: A to Z</label>
-          </p>
-          <p>
-            <input type="radio" id="zToA" value="zToA" v-model="sortStyle" />
-            <label for="zToA">Name: Z to A</label>
-          </p>
-        </div>
-        
+    .lesson-details {
+      padding: 20px;
+      flex: 1;
+    }
 
-        <!-- Search by different Names and Characters -->
-        <div v-if="searchTerm !== ''">
-          <div v-for="product in searchField" class="lesson">
-            <img class="lessonImage" v-bind:src="product.image" />
-            <h2>Subject: {{product.name}}</h2>
-            <p>Location: {{product.location}}</p>
-            <p>Price: £{{product.price}}</p>
-            <p>Spaces available: {{product.spaces}}</p>
-            <button
-              v-html="lessonButton"
-              v-on:click="addToCart(product)"
-              v-if="canAdd(product)"
-            ></button>
-            <button v-html="lessonButton" disabled v-else></button>
-          </div>
-        </div>
+    .lesson h3 {
+      margin-top: 0;
+    }
 
-        
-        <!-- Default View of Products-->
-        <div v-else-if="sortStyle === '' ">
-          <div v-for="product in products" class="lesson">
-            <img class="lessonImage" v-bind:src="product.image" />
-            <h2>Subject: {{product.name}}</h2>
-            <p>Location: {{product.location}}</p>
-            <p>Price: £{{product.price}}</p>
-            <p>Spaces available: {{product.spaces}}</p>
-            <button
-              v-html="lessonButton"
-              v-on:click="addToCart(product)"
-              v-if="canAdd(product)"
-            ></button>
-            <button v-html="lessonButton" disabled v-else></button>
-          </div>
-        </div>
+    .lesson hr {
+      margin: 10px 0;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+  </style>
+</head>
 
-        <!-- Sort by Price Low To High -->
-        <div v-else-if="sortStyle === 'priceLowHigh'">
-          <div v-for="product in sortedProducts" class="lesson">
-            <img class="lessonImage" v-bind:src="product.image" />
-            <p>{{product.name}}</p>
-            <p>Location: {{product.location}}</p>
-            <p>Price: £{{product.price}}</p>
-            <p>Spaces available: {{product.spaces}}</p>
-            <button
-              v-html="lessonButton"
-              v-on:click="addToCart(product)"
-              v-if="canAdd(product)"
-            ></button>
-            <button v-html="lessonButton" disabled v-else></button>
-          </div>
-        </div>
+<body>
 
-        <!-- Sort by Price High to Low -->
-        <div v-else-if="sortStyle === 'priceHighLow'">
-          <div v-for="product in sortedProductsHigh" class="lesson">
-            <img class="lessonImage" v-bind:src="product.image" />
-            <h2>Subject: {{product.name}}</h2>
-            <p>Location: {{product.location}}</p>
-            <p>Price: £{{product.price}}</p>
-            <p>Spaces available: {{product.spaces}}</p>
-            <button
-              v-html="lessonButton"
-              v-on:click="addToCart(product)"
-              v-if="canAdd(product)"
-            ></button>
-            <button v-html="lessonButton" disabled v-else></button>
-          </div>
-        </div>
+  <h2>Orders</h2>
+  <button onclick="getOrders()">Get Orders</button>
+  <button onclick="addOrder()">Add Order</button>
+  <div id="ordersResult"></div>
 
-        <!-- Sort by A to Z Alphabetical Order -->
-        <div v-else-if="sortStyle === 'aToZ'">
-          <div v-for="product in alphabetProducts" class="lesson">
-            <img class="lessonImage" v-bind:src="product.image" />
-            <h2>Subject: {{product.name}}</h2>
-            <p>Location: {{product.location}}</p>
-            <p>Price: £{{product.price}}</p>
-            <p>Spaces available: {{product.spaces}}</p>
-            <button
-              v-html="lessonButton"
-              v-on:click="addToCart(product)"
-              v-if="canAdd(product)"
-            ></button>
-            <button v-html="lessonButton" disabled v-else></button>
-          </div>
-        </div>
+  <h2>Lessons</h2>
+  <button onclick="getLessons()">Get Lessons</button>
+  <button onclick="addLessons()">Add Lessons</button>
+  <button onclick="updateLessons()">Update Lessons</button>
+  <button onclick="searchLessons()">Search Lessons</button>
+  <div id="lessonsResult"></div>
 
-        <!-- Sort by Z to A Alphabetical Order -->
-        <div v-else-if="sortStyle === 'zToA'">
-          <div v-for="product in alphabetProductsZ" class="lesson">
-            <img class="lessonImage" v-bind:src="product.image" />
-            <h2>Subject: {{product.name}}</h2>
-            <p>Location: {{product.location}}</p>
-            <p>Price: £{{product.price}}</p>
-            <p>Spaces available: {{product.spaces}}</p>
-            <button
-              v-html="lessonButton"
-              v-on:click="addToCart(product)"
-              v-if="canAdd(product)"
-            ></button>
-            <button v-html="lessonButton" disabled v-else></button>
-          </div>
-        </div>
-      </div>
+  <script>
+    async function makeRequest(method, url, data = null) {
+      try {
+        const config = {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        };
 
-      <!-- Checkout -->
-      <div class="checkout" v-else>
-        <h2 class="pageHeader">Shopping Cart</h2>
+        if (method !== 'GET' && data !== null) {
+          config.body = JSON.stringify(data);
+        }
 
-        <!-- Cart Products -->
-        <div v-for="product in products" class="cartProducts">
-          <span v-text="showInCart(product,product.id)"></span>
-          <span v-if="counter(product.id) > 0">x</span>
-          <span v-text="counter(product.id)"></span>
-          <button
-            v-text="inCartButton"
-            v-if="counter(product.id) > 0"
-            @click="removeFromCart(product)"
-          ></button>
-        </div>
+        const response = await fetch(url, config);
+        const result = await response.json();
+        return result;
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
 
-          <!-- Name Field For User Input -->
-        <div class="basket">
-          <p class="nameField">
-            Name:
-            <input
-              id="nameid"
-              class="inputField"
-              onkeyup="btnConfirm()"
-              v-model="order.Name"
-            />
-          </p>
+    async function getOrders() {
+      const result = await makeRequest('GET', 'http://localhost:3000/getOrders');
+      document.getElementById('ordersResult').innerHTML = JSON.stringify(result);
+      result.forEach(lesson => {
+        const lessonElement = document.createElement('div');
+        lessonElement.classList.add('lesson');
+        lessonElement.innerHTML = `
+                    <div class="lesson-details">
+                        <h3>${lesson.name}</h3>
+                        <p><strong>Lesson id:</strong> ${lesson.id}</p>
+                        <p><strong>Phone:</strong> ${lesson.phone}</p>
+                        <p><strong>Lesson:</strong> ${lesson.lessonId}</p>
+                        <p><strong>Number of Spaces:</strong> ${lesson.numberOfSpaces}</p>
+                        <hr>
+                    </div>
+                `;
+        document.getElementById('lessonsResult').appendChild(lessonElement);
+      });
+    }
+
+    async function addOrder() {
+      const name = prompt('Name:');
+      const phone = prompt('Phone:');
+      const lessonId = prompt('Lesson:');
+      const numberOfSpaces = parseInt(prompt('Space Needed:'), 10);
+      if (isNaN(numberOfSpaces)) {
+        alert('Please enter correct number or spaces');
+        return;
+      }
+
+      const orderData = {
+        name: name,
+        phone: phone,
+        lessonId: lessonId,
+        numberOfSpaces: numberOfSpaces,
+      };
+      const result = await makeRequest('POST', 'http://localhost:3000/order', orderData);
+      alert('Product Added');
+    }
+
+    async function getLessons() {
+      const result = await makeRequest('GET', 'http://localhost:3000/lessons/getLessons');
+
+      document.getElementById('lessonsResult').innerHTML = '';
+
+      result.forEach(lesson => {
+        const lessonElement = document.createElement('div');
+        lessonElement.classList.add('lesson');
+        lessonElement.innerHTML = `
+                    <img class="lesson-image" src="${lesson.image}" alt="Lesson Image">
+                    <div class="lesson-details">
+                        <h3>${lesson.subject}</h3>
+                        <p><strong>Lesson id:</strong> ${lesson.id}</p>
+                        <p><strong>Location:</strong> ${lesson.location}</p>
+                        <p><strong>Price:</strong> $${lesson.price}</p>
+                        <p><strong>Available Space:</strong> ${lesson.space}</p>
+                        <hr>
+                    </div>
+                `;
+        document.getElementById('lessonsResult').appendChild(lessonElement);
+      });
+    }
+
+    async function addLessons() {
+      const image = prompt('Image:');
+      const subject = prompt('Subject:');
+      const location = prompt('Location:');
+      const price = parseInt(prompt('Price:'), 10);
+      const space = parseInt(prompt('Space:'), 10);
+
+      if (isNaN(price) || isNaN(space)) {
+        alert('Please enter valid numeric values for Price and Space.');
+        return;
+      }
+
+      const lessonData = {
+        image: image,
+        subject: subject,
+        location: location,
+        price: price,
+        space: space
+      };
+
+      const result = await makeRequest('POST', 'http://localhost:3000/lessons/addLessons', lessonData);
+      alert('Product Added');
+    }
+
+    async function updateLessons() {
+      const lessonId = prompt('Enter lesson ID:');
+      const result = await makeRequest('PUT', `http://localhost:3000/lessons/updateLessons/${lessonId}`);
+      console.log(result);
+    }
+
+    async function searchLessons() {
+      const keyword = prompt('Enter search keyword:');
+      const result = await makeRequest('GET', `http://localhost:3000/search?keyword=${keyword}`);
+
+      const lessonElement = document.createElement('div');
+      lessonElement.classList.add('lesson');
+      lessonElement.innerHTML = `
+                    <img class="lesson-image" src="${result.image}" alt="Lesson Image">
+                    <div class="lesson-details">
+                        <h3>${result.subject}</h3>
+                        <p><strong>Lesson id:</strong> ${result.id}</p>
+                        <p><strong>Location:</strong> ${result.location}</p>
+                        <p><strong>Price:</strong> $${result.price}</p>
+                        <p><strong>Available Space:</strong> ${result.space}</p>
+                        <hr>
+                    </div>
+                `;
+      document.getElementById('lessonsResult').appendChild(lessonElement);
+    };
 
 
-          <!-- Phone Number Field For User Input -->
-          <p class="passwordField">
-            Phone Number:
-            <input
-              id="phoneid"
-              class="PhoneinputField"
-              onkeyup="btnConfirm()"
-              v-model="order.phoneNo"
-            />
-          </p>
+  </script>
 
+</body>
 
-          <!-- Submit Button -->
-          <button
-            id="button"
-            class="submitBtn"
-            type="submit"
-            disabled
-            @click="placeOrder"
-          >
-            Confirm
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Important Imports -->
-    <script src="src/products.js"></script>
-    <script src="src/script.js"></script>
-  </body>
 </html>
